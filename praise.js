@@ -27,7 +27,7 @@ module.exports = {
     })
   },
 
-  selectAll: function(table, cb){
+  selectAll: function(table){
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query('SELECT * FROM ' + table, function(err, result){
@@ -42,7 +42,7 @@ module.exports = {
   selectById: function(table, id){
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
-        client.query('SELECT DISTINCT from ' + table + ' where id = ' + id, function(err, result){
+        client.query('SELECT DISTINCT * from ' + table + ' where id = ' + id, function(err, result){
           done();
           if (err) reject(err)
           else resolve(result.rows[0])
@@ -53,7 +53,7 @@ module.exports = {
 
   selectOne: function(table, data){
     var column = Object.getOwnPropertyNames(data)
-    var query = 'SELECT DISTINCT from ' + table + ' where ' + column[0] + ' = ' + data[column]
+    var query = 'SELECT DISTINCT * from ' + table + ' where ' + column[0] + ' = ' + data[column]
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
@@ -80,11 +80,11 @@ module.exports = {
   },
 
   update: function(table, search, set){
-    var sCol = Object.getOwnPropertyNames(search)[0]
-    var sVal = search[sCol]
+    var searchColumn = Object.getOwnPropertyNames(search)[0]
+    var searchValue = search[searchColumn]
     var setCol = Object.getOwnPropertyNames(search)[0]
     var setVal = serach[setCol]
-    var query = 'UPDATE ' + table + ' SET ' + setCol + ' = ' + setVal + ' WHERE ' + sCol + ' = ' + sVal + ';'
+    var query = 'UPDATE ' + table + ' SET ' + setCol + ' = ' + setVal + ' WHERE ' + searchColumn + ' = ' + searchValue + ';'
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
