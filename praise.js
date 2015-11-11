@@ -6,22 +6,22 @@ module.exports = {
   insert: function(table, obj){
     var columns = Object.getOwnPropertyNames(obj),
         values = [],
-        variables = []
+        variables = [];
     for (var prop in obj){
-      values.push(obj[prop])
+      values.push(obj[prop]);
     }
     var query = 'INSERT INTO ' + table + '(' + columns.join(', ') + ')' + 'values(';
     values.forEach(function(_, i){
-      variables.push('$' + (i + 1))
+      variables.push('$' + (i + 1));
     })
-    query += variables.join(', ') + ') RETURNING ID'
+    query += variables.join(', ') + ') RETURNING *;';
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, values, function(err, result){
-          obj.id = result.rows[0].id
+          obj.id = result.rows[0].id;
           done();
-          if (err) reject(err)
-          else resolve(obj)
+          if (err) reject(err);
+          else resolve(obj);
         })
       })
     })
@@ -32,8 +32,8 @@ module.exports = {
       pg.connect(connectionString, function(err, client, done){
         client.query('SELECT * FROM ' + table, function(err, result){
           done();
-          if (err) reject(err) 
-          else resolve(result.rows) 
+          if (err) reject(err);
+          else resolve(result.rows);
         });
       })
     })
@@ -44,8 +44,8 @@ module.exports = {
       pg.connect(connectionString, function(err, client, done){
         client.query('SELECT DISTINCT * from ' + table + ' where id = ' + id, function(err, result){
           done();
-          if (err) reject(err)
-          else resolve(result.rows[0])
+          if (err) reject(err);
+          else resolve(result.rows[0]);
         })
       })
     })
@@ -59,8 +59,8 @@ module.exports = {
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
           done();
-          if (err) reject(err)
-          else resolve(result.rows[0])
+          if (err) reject(err);
+          else resolve(result.rows[0]);
         })
       })
     })
@@ -68,13 +68,27 @@ module.exports = {
 
   delete: function(table, data){
     var column = Object.getOwnPropertyNames(data)
-    var query = 'DELETE FROM ' + table + ' WHERE ' + column[0] + ' = ' + "'" + data[column] + "';"
+    var query = 'DELETE FROM ' + table + ' WHERE ' + column[0] + ' = ' + "'" + data[column] + "' RETURNING *;"
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
           done()
-          if (err) reject(err)
-          else resolve(result)
+          if (err) reject(err);
+          else resolve(result.rows);
+        })
+      })
+    })
+  },
+
+  deleteOne: function(table, data){
+    var column = Object.getOwnPropertyNames(data)
+    var query = 'DELETE FROM ' + table + ' WHERE ' + column[0] + ' = ' + "'" + data[column] + "' RETURNING *;"
+    return new Promise(function(resolve, reject){
+      pg.connect(connectionString, function(err, client, done){
+        client.query(query, function(err, result){
+          done()
+          if (err) reject(err);
+          else resolve(result.rows[0]);
         })
       })
     })
@@ -85,7 +99,7 @@ module.exports = {
     var searchValue = search[searchColumn]
     var setCol = Object.getOwnPropertyNames(search)[0]
     var setVal = serach[setCol]
-    var query = 'UPDATE ' + table + ' SET ' + setCol + ' = ' + "'" + setVal + "'"+ ' WHERE ' + searchColumn + " = '"  + searchValue + "';"
+    var query = 'UPDATE ' + table + ' SET ' + setCol + " = '" + setVal + "' WHERE " + searchColumn + " = '"  + searchValue + "' RETURNING *;"
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
