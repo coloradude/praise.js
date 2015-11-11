@@ -1,5 +1,5 @@
 var pg = require('pg');
-var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/weresquirrels';
+var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/tacos_info';
 var Promise = require('promise')
 
 module.exports = {
@@ -53,7 +53,8 @@ module.exports = {
 
   selectOne: function(table, data){
     var column = Object.getOwnPropertyNames(data)
-    var query = 'SELECT DISTINCT * from ' + table + ' where ' + column[0] + ' = ' + data[column]
+    var query = 'SELECT DISTINCT * from ' + table + ' where ' + column[0] + ' = ' + "'" + data[column] + "';"
+    console.log(query)
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
@@ -67,7 +68,7 @@ module.exports = {
 
   delete: function(table, data){
     var column = Object.getOwnPropertyNames(data)
-    var query = 'DELETE FROM ' + table + ' WHERE ' + column[0] + ' = ' data[column] + ';'
+    var query = 'DELETE FROM ' + table + ' WHERE ' + column[0] + ' = ' + "'" + data[column] + "';"
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
@@ -84,7 +85,7 @@ module.exports = {
     var searchValue = search[searchColumn]
     var setCol = Object.getOwnPropertyNames(search)[0]
     var setVal = serach[setCol]
-    var query = 'UPDATE ' + table + ' SET ' + setCol + ' = ' + setVal + ' WHERE ' + searchColumn + ' = ' + searchValue + ';'
+    var query = 'UPDATE ' + table + ' SET ' + setCol + ' = ' + "'" + setVal + "'"+ ' WHERE ' + searchColumn + " = '"  + searchValue + "';"
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
