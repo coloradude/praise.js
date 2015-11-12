@@ -66,6 +66,19 @@ module.exports = {
     })
   },
 
+  selectDistinct: function(table, column){
+    var query = 'SELECT DISTINCT ' + column + ' from ' + table + ';'
+    return new Promise(function(resolve, reject){
+      pg.connect(connectionString, function(err, client, done){
+        client.query(query, function(err, result){
+          done();
+          if (err) reject(err);
+          else resolve(result.rows[0]);
+        })
+      })
+    })
+  },
+
   delete: function(table, data){
     var column = Object.getOwnPropertyNames(data)
     var query = 'DELETE FROM ' + table + ' WHERE ' + column[0] + ' = ' + "'" + data[column] + "' RETURNING *;"
