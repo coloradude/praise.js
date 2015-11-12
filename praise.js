@@ -73,7 +73,7 @@ module.exports = {
         client.query(query, function(err, result){
           done();
           if (err) reject(err);
-          else resolve(result.rows[0]);
+          else resolve(result.rows);
         })
       })
     })
