@@ -1,5 +1,5 @@
 var pg = require('pg');
-var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/tacos_info';
+var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/memories_db';
 var Promise = require('promise')
 
 module.exports = {
@@ -18,10 +18,9 @@ module.exports = {
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, values, function(err, result){
-          obj.id = result.rows[0].id;
           done();
           if (err) reject(err);
-          else resolve(obj);
+          else resolve(result);
         })
       })
     })
@@ -51,10 +50,23 @@ module.exports = {
     })
   },
 
+  select: function(table, data){
+    var column = Object.getOwnPropertyNames(data)
+    var query = 'SELECT * from ' + table + ' where ' + column[0] + ' = ' + "'" + data[column] + "';"
+    return new Promise(function(resolve, reject){
+      pg.connect(connectionString, function(err, client, done){
+        client.query(query, function(err, result){
+          done();
+          if (err) reject(err);
+          else resolve(result.rows);
+        })
+      })
+    })
+  },
+
   selectOne: function(table, data){
     var column = Object.getOwnPropertyNames(data)
     var query = 'SELECT DISTINCT * from ' + table + ' where ' + column[0] + ' = ' + "'" + data[column] + "';"
-    console.log(query)
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
@@ -96,6 +108,19 @@ module.exports = {
   deleteOne: function(table, data){
     var column = Object.getOwnPropertyNames(data)
     var query = 'DELETE FROM ' + table + ' WHERE ' + column[0] + ' = ' + "'" + data[column] + "' RETURNING *;"
+    return new Promise(function(resolve, reject){
+      pg.connect(connectionString, function(err, client, done){
+        client.query(query, function(err, result){
+          done()
+          if (err) reject(err);
+          else resolve(result.rows[0]);
+        })
+      })
+    })
+  },
+
+  deleteAll: function(table){
+    var query = 'DELETE FROM ' + table + ';'
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
