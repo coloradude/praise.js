@@ -1,0 +1,24 @@
+{
+  "name": "praise.js",
+  "version": "1.0.0",
+  "description": "Duplicates Monk functionailty with node-postgres and Promises",
+  "main": "praise.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coloradude/praise.js.git"
+  },
+  "keywords": [
+    "monk",
+    "postgres",
+    "pg"
+  ],
+  "author": "Coloradude",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coloradude/praise.js/issues"
+  },
+  "homepage": "https://github.com/coloradude/praise.js#readme"
+}
