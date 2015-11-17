@@ -1,6 +1,6 @@
 {
   "name": "praise.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Duplicates Monk functionailty with node-postgres and Promises",
   "main": "praise.js",
   "scripts": {
@@ -15,6 +15,10 @@
     "postgres",
     "pg"
   ],
+  "dependencies": {
+    "pg": "4.43",
+    "promise": "7.0.4"
+  },
   "author": "Coloradude",
   "license": "MIT",
   "bugs": {

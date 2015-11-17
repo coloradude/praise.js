@@ -20,7 +20,7 @@ module.exports = {
         client.query(query, values, function(err, result){
           done();
           if (err) reject(err);
-          else resolve(result);
+          else resolve(result.rows[0]);
         })
       })
     })
