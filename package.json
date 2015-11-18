@@ -1,6 +1,6 @@
 {
   "name": "praise.js",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Duplicates Monk functionailty with node-postgres and Promises",
   "main": "praise.js",
   "scripts": {
