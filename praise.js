@@ -153,7 +153,7 @@ module.exports = {
   join: function(table1, table2, id){
     var t1 = Object.getOwnPropertyNames(table1)[0]
     var t2 = Object.getOwnPropertyNames(table2)[0]
-    var query = 'SELECT * FROM ' + t1 + ', ' + t2 + ' WHERE ' + table1[t1] + ' = ' + table2[t2] + ';'
+    var query = 'SELECT * FROM ' + t1 + ' INNER JOIN ' + t2 + ' WHERE ' + table1[t1] + ' = ' + table2[t2] + ';'
     console.log(query)
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
