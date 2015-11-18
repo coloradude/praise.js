@@ -1,5 +1,5 @@
 var pg = require('pg');
-var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/memories_db';
+var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/all_in_favor';
 var Promise = require('promise')
 
 module.exports = {
@@ -15,6 +15,7 @@ module.exports = {
       variables.push('$' + (i + 1));
     })
     query += variables.join(', ') + ') RETURNING *;';
+    console.log(query)
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, values, function(err, result){
@@ -135,8 +136,8 @@ module.exports = {
   update: function(table, search, set){
     var searchColumn = Object.getOwnPropertyNames(search)[0]
     var searchValue = search[searchColumn]
-    var setCol = Object.getOwnPropertyNames(search)[0]
-    var setVal = serach[setCol]
+    var setCol = Object.getOwnPropertyNames(set)[0]
+    var setVal = set[setCol]
     var query = 'UPDATE ' + table + ' SET ' + setCol + " = '" + setVal + "' WHERE " + searchColumn + " = '"  + searchValue + "' RETURNING *;"
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
@@ -144,6 +145,48 @@ module.exports = {
           done()
           if (err) reject(err)
           else resolve(result)
+        })
+      })
+    })
+  },
+
+  join: function(table1, table2, id){
+    var t1 = Object.getOwnPropertyNames(table1)[0]
+    var t2 = Object.getOwnPropertyNames(table2)[0]
+    var query = 'SELECT * FROM ' + t1 + ', ' + t2 + ' WHERE ' + table1[t1] + ' = ' + table2[t2] + ';'
+    console.log(query)
+    return new Promise(function(resolve, reject){
+      pg.connect(connectionString, function(err, client, done){
+        client.query(query, function(err, result){
+          done()
+          if (err) reject(err)
+          else resolve(result.rows[0])
+        })
+      })
+    })
+  },
+
+  countVotes: function(id){
+    var query = 'SELECT vote, count(vote) from votes WHERE poll_id = ' + id + ' GROUP BY VOTE;'
+    return new Promise(function(resolve, reject){
+      pg.connect(connectionString, function(err, client, done){
+        client.query(query, function(err, result){
+          done()
+          if (err) reject(err)
+          else resolve(result.rows)
+        })
+      })
+    })
+  },
+
+  getVoters: function(id){
+    var query = 'SELECT * FROM votes WHERE poll_id = ' + id + ' AND name IS NOT NULL'
+    return new Promise(function(resolve, reject){
+      pg.connect(connectionString, function(err, client, done){
+        client.query(query, function(err, result){
+          done()
+          if (err) reject(err)
+          else resolve(result.rows)
         })
       })
     })
