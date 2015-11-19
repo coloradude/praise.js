@@ -150,10 +150,8 @@ module.exports = {
     })
   },
 
-  join: function(table1, table2, id){
-    var t1 = Object.getOwnPropertyNames(table1)[0]
-    var t2 = Object.getOwnPropertyNames(table2)[0]
-    var query = 'SELECT * FROM ' + t2 + ' NATURAL JOIN ' + t1 + ' WHERE options.poll_id = ' + table2[t2] + ');'
+  join: function(t1, t2, id){
+    var query = 'SELECT * FROM ' + t2 + ' NATURAL JOIN ' + t1 + ' WHERE options.poll_id = ' + id + ';'
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
