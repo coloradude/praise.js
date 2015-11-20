@@ -177,7 +177,7 @@ module.exports = {
   },
 
   getVoters: function(id){
-    var query = 'SELECT * FROM votes WHERE poll_id = ' + id + ' AND name IS NOT NULL'
+    var query = 'SELECT * FROM votes WHERE poll_id = ' + id + ';'
     return new Promise(function(resolve, reject){
       pg.connect(connectionString, function(err, client, done){
         client.query(query, function(err, result){
