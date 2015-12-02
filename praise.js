@@ -161,31 +161,5 @@ module.exports = {
         })
       })
     })
-  },
-
-  countVotes: function(id){
-    var query = 'SELECT vote, count(vote) from votes WHERE poll_id = ' + id + ' GROUP BY VOTE;'
-    return new Promise(function(resolve, reject){
-      pg.connect(connectionString, function(err, client, done){
-        client.query(query, function(err, result){
-          done()
-          if (err) reject(err)
-          else resolve(result.rows)
-        })
-      })
-    })
-  },
-
-  getVoters: function(id){
-    var query = 'SELECT * FROM votes WHERE poll_id = ' + id + ';'
-    return new Promise(function(resolve, reject){
-      pg.connect(connectionString, function(err, client, done){
-        client.query(query, function(err, result){
-          done()
-          if (err) reject(err)
-          else resolve(result.rows)
-        })
-      })
-    })
   }
 }
